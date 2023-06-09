@@ -1,0 +1,21 @@
+
+var game_info ={
+		"player": "X",
+		"player_sign":"X",
+		"computer_sign": "Ali",
+		"step_no": 0,
+		"player_score": 0,
+		"computer_score":0, 
+		"game_over": false,// over
+		"winner":"",
+		"computer_wining_txt":"Ali Naqvi Wins",
+		"player_wining_txt":"You Wins",
+		"diagnols" : [['1_1','2_2','3_3'],['a3','b2','c1']]
+	};
+
+// var check ={
+// "row"
+
+// }
+
+var coord = [[0,0,0],[0,0,0],[0,0,0]];

@@ -1,0 +1,135 @@
+
+
+.game_box
+{
+	width:100%;
+}
+
+.game_area
+{
+width: 340px;
+margin-left: auto;
+margin-right: auto;
+}
+
+#head h2
+{
+	text-align: center;
+}
+
+table
+{}
+
+#head div
+{
+
+}
+table tr td
+{
+height: 108px;
+	width: 100px;
+	border: solid black 2px;
+	font-size: 64px;
+	font-family: cursive;
+	text-align: center;
+	background: radial-gradient(#deb3a370, transparent);
+
+}
+table tr
+{
+	height:100px;
+}
+
+#cross , #oval 
+{
+	display: inline-block;
+    width: 148px;
+    height:20px;
+    border: 1px solid black;
+    margin: 4px;
+    margin-bottom: 16px;
+    padding-left: 10px;
+}
+
+
+#cross label , #oval label
+{
+	text-align: right;
+   padding: 0px 28%;
+}
+
+/*animation*/
+
+#line {
+  display: none;
+  height:7px;
+  width:0;
+  margin-top:1px;
+  background:red;
+  transform:rotate(45deg);
+  transform-origin: left;
+  animation:grow 0.5s linear forwards;
+  margin-bottom:-8px;
+      }
+@keyframes grow{
+  to {width:372px;}
+}
+
+
+#straightLine {
+    
+    display: none; 
+    height: 7px;
+    width: 0;
+    margin-top: 58px;
+    background: red;
+    /* transform: rotate(43deg); */
+    transform-origin: left;
+    animation: grow1 0.5s linear forwards;
+    margin-bottom: -59px;
+    
+      }
+
+   #straightLine{
+    display: block;
+   }   
+@keyframes grow1{
+  to {width: 279px;}
+}
+
+#game_status
+{
+  text-align: center;
+}
+
+#winner_ann
+{
+    display: none;
+      opacity: 0;
+    background: white;
+    margin-top: -398px;
+    left: 4px;
+    height: 324px;
+    position: relative;
+    width: 318px;
+    text-align: center;
+    transform-origin: top;
+    animation: appear 2.5s linear forwards;
+}
+
+
+@keyframes appear{
+  to {opacity:1;}
+}
+#winner_ann div{
+ height: 21px;
+    width: 100%;
+    margin-bottom: auto;
+  }
+
+#winner_ann div p{
+position: relative;
+font-size: 70px;
+font-family: cursive;
+padding-top: 103px;
+  }

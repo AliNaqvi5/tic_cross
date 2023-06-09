@@ -1,0 +1,540 @@
+document.getElementById("game_area").addEventListener("click", OnclickBox);
+restart();
+function OnclickBox(evnt)
+{
+	var boxno = evnt.target.id;
+	    // console.log(boxno);
+// first column , 2nd row 
+// console.log(game_info['player']);
+// console.log("sign " +game_info['player_sign']);
+
+	if(game_info['player'] == game_info['player_sign'])
+	{
+			if(boxno=="0_0" || boxno=="0_1" || boxno=="0_2" || boxno=="1_0" || boxno=="1_1" || boxno=="1_2" || boxno=="2_0" || boxno=="2_1" || boxno=="2_2" )
+			{
+				if(game_info["player"] == game_info["player_sign"])
+				{
+				   changeBox(boxno,game_info['player_sign']);
+				}
+			}
+			// console.log("player sign "+game_info["player"]); 
+
+	}
+}
+
+function restart()
+{
+	// alert('s');
+	document.getElementById('player').innerHTML = game_info['player_sign'] + " -";
+	document.getElementById('computer').innerHTML = game_info['computer_sign']+ " -";
+	 var i, n = coord.length;
+    for (i = 0; i < n; ++i) {
+        coord[0][i] = 0;
+        coord[1][i] = 0;
+        coord[2][i] = 0;
+        document.getElementById("0_"+i).innerHTML = "";
+        document.getElementById("1_"+i).innerHTML = "";
+        document.getElementById("2_"+i).innerHTML = "";
+    }
+
+    game_info['game_over']=false;
+    game_info['winner']="";
+    game_info["step_no"] = 0;
+    game_info["player"] = "X";
+    	document.getElementById("line").style.display= "none";
+	document.getElementById("straightLine").style.display= "none";
+	document.getElementById("game_status_txt").innerHTML= "Start Game";
+		document.getElementById("winner_ann").style.display = 'none';
+
+}
+
+function changeBox(boxno,val)
+{
+
+var ColRow = boxno.split("_");
+if(game_info['game_over'] == false )
+{
+	if(coord[ColRow[0]][ColRow[1]] == 0)
+	{
+	    if(val == game_info['player_sign'])
+	    {
+		coord[ColRow[0]][ColRow[1]]=1;
+		document.getElementById(boxno).style.color= "#2196f3";
+		document.getElementById("line").style.background= "#2196f3";
+		document.getElementById("straightLine").style.background= "#2196f3";
+	    }
+	    else if(val== game_info['computer_sign'])
+	    {
+	    coord[ColRow[0]][ColRow[1]]=2;	
+	    document.getElementById(boxno).style.color= "#e91e63";
+	    document.getElementById("line").style.background= "#e91e63";
+		document.getElementById("straightLine").style.background= "#e91e63";
+	    }
+	    // console.log(coord);
+		document.getElementById(boxno).innerHTML = val;
+		// console.log("start");
+			if(!checkWinner() && !checkDraw())
+			{
+			togglePlayer();
+			}else
+			{
+				scoreUpdate();
+			}
+			return true;
+	}
+	else
+		{return false;}
+}
+
+}
+
+
+function togglePlayer()
+{
+	if(game_info["player"] == game_info["player_sign"])
+	{
+
+		game_info["player"]= game_info["computer_sign"];
+		document.getElementById("game_status_txt").innerHTML= "'"+game_info["computer_sign"]+ "' Turn";
+		setTimeout(ComputerPlay, 500);
+	}
+	else
+	{ 
+		game_info["player"] = game_info["player_sign"];		
+		document.getElementById("game_status_txt").innerHTML= "'"+game_info["player_sign"]+ "' Turn";
+	}
+
+game_info['step_no']++;
+}
+
+function ComputerPlay()
+{
+var val = game_info['computer_sign'];
+if(game_info['game_over'] == false && game_info["player"] == game_info["computer_sign"])
+{
+	
+	// console.log('ali '+ ali);
+	if(!tryToWin())
+	{
+		if(!tryToDefend())
+		{
+			if(!impossible_1())
+			{random_step(val);}
+		}
+	}
+	
+	
+}
+	// togglePlayer();
+}
+
+function impossible_1()
+{
+	let row ,col;
+	console.log(coord);
+	if( (coord[1][0] == 1 && coord[2][1] == 1) || (coord[2][1] == 1 && coord[1][2] == 1) || (coord[1][2] == 1 && coord[0][1] == 1) ||(coord[0][1] == 1 && coord[1][0] == 1)  )
+	{
+		if(coord[1][0] == 1 && coord[2][1] == 1){row=2;col=0;}
+		if(coord[2][1] == 1 && coord[1][2] == 1){row=2;col=2;}
+		if(coord[1][2] == 1 && coord[0][1] == 1){row=0;col=2;}
+		if(coord[0][1] == 1 && coord[1][0] == 1){row=0;col=0;}
+		return changeBox(row+"_"+col,game_info["computer_sign"]);
+	}else
+	if(coord[1][1] == 0 )
+	{
+		return changeBox("1_1",game_info["computer_sign"]);
+	}
+	else if(coord[1][1] == 2)
+	{ 
+		if(coord[0][0] == 1 && coord[1][2] == 1)
+		{
+			return changeBox("0_2",game_info["computer_sign"]);
+		}else if(coord[2][0] == 1 && coord[1][2] == 1)
+		{
+			return changeBox("2_2",game_info["computer_sign"]);
+		}else if(coord[1][0] == 1 && coord[0][2] == 1)
+		{
+			return changeBox("0_0",game_info["computer_sign"]);
+		}else if(coord[1][0] == 1 && coord[2][2] == 1)
+		{
+			return changeBox("2_0",game_info["computer_sign"]);
+		}else
+		if(coord[0][2] == 1 || coord[2][2] == 1 )
+		{
+			return changeBox("1_2",game_info["computer_sign"]);
+		}else
+		if(coord[0][0] == 1 || coord[2][0] == 1 )
+		{
+			return changeBox("1_0",game_info["computer_sign"]);
+		}
+
+	}else if(coord[1][1] == 1)
+	{
+		//0_0, 0_2, 2_0, 2_2 options
+		row =Math.floor(Math.random()*2.5);
+		col =Math.floor(Math.random()*2.5);
+		
+		if(row == 1)
+			{row=0;}
+		if(col==1)
+			{col=2}
+		 console.log("row = " + row + " col= " + col);
+		if((coord[0][0]==2 || coord[2][2] == 2) && row == col) // 0_2 , 2_0 options
+		{ 
+				if(col==0){col=2;}else{col = 0;}
+		}
+		else if((coord[0][2]==2 || coord[2][0] == 2) && row != col)// 2_2 , 0_0 options
+		{
+			row = col;
+		}
+		
+		return changeBox(row + "_"+ col ,game_info["computer_sign"]);
+	}
+	else
+	{ return false;}
+} 
+
+function tryToWin()
+{
+	console.log("smart_play");
+	if(!checkRow(game_info['computer_sign']))
+	{
+		if(!checkCol(game_info['computer_sign']))
+		{
+		return checkDiagnols(game_info['computer_sign']);
+
+		}else
+		{
+		console.log("ColWin");
+		return true;
+		}
+	}else
+	{
+		console.log("rowWin");
+		return true;
+	}
+
+}
+function tryToDefend()
+{
+	console.log("smart_play");
+	if(!checkRow(game_info['player_sign']))
+	{
+		if(!checkCol(game_info['player_sign']))
+		{
+		return checkDiagnols(game_info['player_sign']);
+
+		}else
+		{
+		console.log("ColDef");
+		return true;
+		}
+	}else
+	{
+		console.log("rowDef");
+		return true;
+	}
+
+}
+
+function checkRow(sign)
+{
+	let sign_no=0;
+	if(sign == game_info['player_sign'])
+	{sign_no = 1 ;}
+	else if(sign == game_info['computer_sign'])
+	{sign_no = 2;}
+	for(var a=0 ; a < 3 ; a++)
+	{		
+		if((coord[a][0] == sign_no && coord[a][1] == sign_no && coord[a][2] == 0) )
+		{
+			return changeBox(a+"_2",game_info['computer_sign']);
+			break;
+		}else
+		if((coord[a][0] == sign_no && coord[a][1] == 0 && coord[a][2] == sign_no) )
+		{
+			return changeBox(a+"_1",game_info['computer_sign']);
+			break;
+		}else
+		if((coord[a][0] == 0 && coord[a][1] == sign_no && coord[a][2] == sign_no) )
+		{
+			return changeBox(a+"_0",game_info['computer_sign']);
+			break;
+		}
+	}
+}
+
+function checkCol(sign)
+{
+	let sign_no=0;
+	if(sign == game_info['player_sign'])
+	{sign_no = 1 ;}
+	else if(sign == game_info['computer_sign'])
+	{sign_no = 2;}
+
+	for(var a=0 ; a < 3 ; a++)
+	{		
+	if((coord[0][a] == sign_no && coord[1][a] == sign_no && coord[2][a] == 0))
+	{
+		return changeBox("2_"+a,game_info['computer_sign']);
+		break;
+	}else
+	if((coord[0][a] == sign_no && coord[1][a] == 0 && coord[2][a] == sign_no))
+	{
+		return changeBox("1_"+a,game_info['computer_sign']);
+		break;
+	}else
+	if((coord[0][a] == 0 && coord[1][a] == sign_no && coord[2][a] == sign_no ))
+	{
+		return changeBox("0_"+a,game_info['computer_sign']);
+		break;
+	}
+	
+	}
+}
+
+function checkDiagnols(sign)
+{
+	let sign_no=0;
+	if(sign == game_info['player_sign'])
+	{sign_no = 1 ;}
+	else if(sign == game_info['computer_sign'])
+	{sign_no = 2;}
+
+			// check for diagnols from top left to bottom right
+		if((coord[0][0] == sign_no && coord[1][1] == sign_no && coord[2][2] == 0))
+		{
+			return changeBox("2_2",game_info['computer_sign']);
+		
+		}else
+		if((coord[0][0] == sign_no && coord[1][1] == 0 && coord[2][2] == sign_no))
+		{
+			return changeBox("1_1",game_info['computer_sign']);
+		}else
+		if((coord[0][0] == 0 && coord[1][1] == sign_no && coord[2][2] == sign_no))
+		{
+			return changeBox("0_0",game_info['computer_sign']);
+		}else// check for diagnols from top right to bottom left
+		if((coord[2][0] == sign_no && coord[1][1] == sign_no && coord[0][2] == 0))
+		{
+			return changeBox("0_2",game_info['computer_sign']);
+		}else
+		if((coord[2][0] == sign_no && coord[1][1] == 0 && coord[0][2] == sign_no))
+		{
+			return changeBox("1_1",game_info['computer_sign']);
+		}else
+		if((coord[2][0] == 0 && coord[1][1] == sign_no && coord[0][2] == sign_no))
+		{
+			return changeBox("2_0",game_info['computer_sign']);
+		}
+		else
+		{
+			return false;
+		}
+
+}
+
+
+function random_step(comp_sign)
+{
+	console.log("random_play");
+	var row =Math.floor(Math.random()*2.5);
+	var col =Math.floor(Math.random()*2.5);
+	// console.log("Computer coord "+row+"_"+col);
+
+	if(!changeBox( row+"_"+col , comp_sign))
+	{
+		ComputerPlay();
+	}
+	else
+	{
+		return true;
+	}
+}
+
+
+
+function checkWinner()
+{
+	// console.log("end");
+	var len = coord.length;
+	for(var i= 0; i<len; i++)
+	{
+		if(coord[i][0] == 1 && coord[i][1] == 1 && coord[i][2] == 1)
+		{
+			game_info["winner"] = game_info['player_wining_txt'];
+			Celebrations(i+"_0" , i+"_1", i+"_2" );
+			break;
+
+		}
+		
+		if(coord[i][0] == 2 && coord[i][1] == 2 && coord[i][2] == 2)
+		{
+			game_info["winner"] = game_info['computer_wining_txt'];
+			Celebrations(i+"_0" , i+"_1", i+"_2" );
+			break;	
+		}
+		
+		if(coord[0][i] == 1 && coord[1][i] == 1 && coord[2][i] == 1)
+		{
+			game_info["winner"] = game_info['player_wining_txt'];
+			Celebrations("0_"+i ,"1_"+i, "2_"+i );
+			break;
+		}
+
+		if(coord[0][i] == 2 && coord[1][i] == 2 && coord[2][i] == 2)
+		{
+			game_info["winner"] = game_info['computer_wining_txt'];
+			Celebrations("0_"+i ,"1_"+i, "2_"+i );
+			break;
+		}
+		
+		
+    }	
+		if(coord[0][0] == 1 && coord[1][1] == 1 && coord[2][2] == 1)
+		{
+			game_info["winner"] = game_info['player_wining_txt'];
+		Celebrations("0_0" , "1_1", "2_2" );
+		}
+		if(coord[0][0] == 2 && coord[1][1] == 2 && coord[2][2] == 2)
+		{
+			game_info["winner"] = game_info['computer_wining_txt'];
+		Celebrations("0_0" , "1_1", "2_2" );
+		}
+		if(coord[2][0] == 1 && coord[1][1] == 1 && coord[0][2] == 1)
+		{
+			game_info["winner"] = game_info['player_wining_txt'];
+		Celebrations("2_0" , "1_1", "0_2" );
+		}
+		if(coord[2][0] == 2 && coord[1][1] == 2 && coord[0][2] == 2)
+		{
+			game_info["winner"] = game_info['computer_wining_txt'];
+		Celebrations("2_0" , "1_1", "0_2" );
+		}
+
+		if(game_info["winner"] !="")
+		{
+				game_info['game_over'] = true;
+				document.getElementById("game_status_txt").innerHTML = '"'+game_info["winner"];
+				document.getElementById("winner_ann_txt").innerHTML = game_info["winner"];
+				document.getElementById("winner_ann").style.display = 'block';
+				// alert( game_info["winner"]+" wins ");
+				return true;
+		}
+		else
+		{
+			return false;
+		}
+
+}
+
+function Celebrations(box_1 , box_2, box_3 )
+{
+//diagnol 1
+if(box_1 == "0_0" && box_2 == "1_1" && box_3 == "2_2" )
+{
+	document.getElementById("line").style.transform= "rotate(45deg)";
+	document.getElementById("line").style.marginTop= "27px";
+	document.getElementById("line").style.marginBottom= "-34px";
+	document.getElementById("line").style.marginLeft= "29px";
+	document.getElementById("line").style.display= "block";
+}
+//diagnol 2
+if(box_1 == "2_0" && box_2 == "1_1" && box_3 == "0_2" )
+{
+	document.getElementById("line").style.transform= "rotate(-45deg)";
+	// document.getElementById("line").style.transformOrigin= "right";
+		document.getElementById("line").style.marginTop= "294px";
+	document.getElementById("line").style.marginBottom= "-301px";
+	document.getElementById("line").style.marginLeft= "33px";
+	document.getElementById("line").style.display= "block";
+	
+}
+//rows
+if(box_1 == "0_0" && box_2 == "0_1" && box_3 == "0_2" )
+{	document.getElementById("straightLine").style.marginLeft= "24px";
+	document.getElementById("straightLine").style.transform= "rotate(0deg)";
+	document.getElementById("straightLine").style.marginTop= "58px";
+	document.getElementById("straightLine").style.marginBottom= "-59px";
+	document.getElementById("straightLine").style.display= "block";
+
+}
+if(box_1 == "1_0" && box_2 == "1_1" && box_3 == "1_2" )
+{	
+	document.getElementById("straightLine").style.marginLeft= "24px";
+	document.getElementById("straightLine").style.transform= "rotate(0deg)";
+	document.getElementById("straightLine").style.marginTop= "164px";
+	document.getElementById("straightLine").style.marginBottom= "-171px";
+	document.getElementById("straightLine").style.display= "block";
+}
+if(box_1 == "2_0" && box_2 == "2_1" && box_3 == "2_2" )
+{	
+	document.getElementById("straightLine").style.marginLeft= "24px";
+	document.getElementById("straightLine").style.transform= "rotate(0deg)";
+	document.getElementById("straightLine").style.marginTop= "275px";
+	document.getElementById("straightLine").style.marginBottom= "-282px";
+	document.getElementById("straightLine").style.display= "block";
+}
+if(box_1 == "0_0" && box_2 == "1_0" && box_3 == "2_0" )
+{
+	document.getElementById("straightLine").style.marginTop= "24px";
+	document.getElementById("straightLine").style.marginBottom= "-31px";
+	document.getElementById("straightLine").style.transform= "rotate(90deg)";
+	document.getElementById("straightLine").style.marginLeft= "55px";
+	document.getElementById("straightLine").style.display= "block";
+}
+if(box_1 == "0_1" && box_2 == "1_1" && box_3 == "2_1" )
+{
+	document.getElementById("straightLine").style.marginTop= "24px";
+	document.getElementById("straightLine").style.marginBottom= "-31px";
+	document.getElementById("straightLine").style.transform= "rotate(90deg)";
+	document.getElementById("straightLine").style.marginLeft= "163px";
+	document.getElementById("straightLine").style.display= "block";
+}
+if(box_1 == "0_2" && box_2 == "1_2" && box_3 == "2_2" )
+{
+	document.getElementById("straightLine").style.marginTop= "24px";
+	document.getElementById("straightLine").style.marginBottom= "-31px";
+	document.getElementById("straightLine").style.transform= "rotate(90deg)";
+	document.getElementById("straightLine").style.marginLeft= "271px";
+	document.getElementById("straightLine").style.display= "block";
+}
+
+}
+
+function checkDraw()
+{
+		if(coord[0][0] != 0 && coord[0][1] != 0 && coord[0][2] != 0 && coord[1][0] != 0 && 
+			coord[1][1] != 0 && coord[1][2] != 0 && coord[2][0] != 0 && 
+			coord[2][1] != 0 && coord[2][2] != 0)
+		{
+			game_info["winner"] = "";
+			game_info['game_over'] = true;
+			document.getElementById("game_status_txt").innerHTML= "Game draw ";
+			document.getElementById("winner_ann_txt").innerHTML= "Game draw ";
+			document.getElementById("winner_ann").style.display = 'block';
+	
+			// alert("Game Draw");
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+}
+
+function scoreUpdate(winner = game_info['winner'])
+{
+	console.log("winner = " + winner);
+if(winner == game_info['player_wining_txt'])
+{
+	(game_info['player_score'])++;
+	document.getElementById('player_score').innerHTML= game_info['player_score'];
+}else
+if(winner == game_info['computer_wining_txt'])
+{
+	(game_info['computer_score'])++;
+	document.getElementById('computer_score').innerHTML= game_info['computer_score'];
+}
+}
